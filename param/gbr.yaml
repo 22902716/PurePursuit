@@ -2,11 +2,11 @@ Benchmark_v_gain: 0.07
 Benchmark_lfd: 0.3
 Benchmark_Max_iter: 5
 
-noise_v_gain: 0.7
+noise_v_gain: 0.07
 noise_lfd: 0.3
 noise_Max_iter: 300
 
-delay_v_gain: 0.0
+delay_v_gain: 0.07
 delay_lfd: 0.3
 delay_Max_iter: 10
 
