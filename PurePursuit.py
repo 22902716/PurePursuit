@@ -6,6 +6,9 @@ import math
 from argparse import Namespace
 from dataSave import dataSave
 
+mu = 0.
+sigma = 0.2
+
 
 class PurePursuitPlanner:
     def __init__(self, map_name, testmode, param, wb = 0.35):
@@ -144,36 +147,31 @@ class PurePursuitPlanner:
         if self.completion > 99.5: self.completion = 100 
         speed_mod,steering_angle_mod = self.outputActionAdjust(speed,steering_angle)
         _,trackErr = self.interp_pts(self.ego_index,self.min_dist)
-        self.ds.saveStates(laptime,self.X0,speed,trackErr)
+        self.ds.saveStates(laptime,self.X0,speed,trackErr, self.scaledRand)
         return speed_mod, steering_angle_mod
     
 
     def inputStateAdust(self,obs):
         X0 = [obs['poses_x'][0], obs['poses_y'][0], obs['linear_vels_x'][0]]
-
-        mu = 0.
-        sigma = 0.2
         rand = np.random.normal(mu,sigma,1)
-        scaledRand = rand*self.scale
+        self.scaledRand = rand*self.scale
 
         if self.TESTMODE == "perception_noise":
-            X0 = [obs['poses_x'][0]+scaledRand[0], obs['poses_y'][0]+scaledRand[0], obs['linear_vels_x'][0]]
+            X0 = [obs['poses_x'][0]+self.scaledRand[0], obs['poses_y'][0]+self.scaledRand[0], obs['linear_vels_x'][0]]
 
         return X0
     
     def outputActionAdjust(self,speed,steering):
-        mu = 0.
-        sigma = 0.2
         rand = np.random.normal(mu,sigma,1)
-        scaledRand = rand*self.scale
+        self.scaledRand = rand*self.scale
 
         speed_mod = speed
         steering_mod = steering
 
         if self.TESTMODE == "Outputnoise_speed":
-            speed_mod = speed + scaledRand[0]
+            speed_mod = speed + self.scaledRand[0]
         elif self.TESTMODE == "Outputnoise_steering":
-            steering_mod = steering + scaledRand[0]
+            steering_mod = steering + self.scaledRand[0]
 
         return speed_mod, steering_mod
 

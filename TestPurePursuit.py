@@ -18,15 +18,15 @@ UPDATE_PERIOD = 2
 
 def main():
     map_name_list = ["gbr","esp","mco"]
-    # map_name_list = ["mco"]
+    # map_name_list = ["esp"]
 
     '''Tuning'''
     # testmode_list = ["v_gain","lfd"]
 
     '''Experiments'''
-    testmode_list = ["perception_delay"]
+    # testmode_list = ["perception_delay"]
 
-    # testmode_list = ["Benchmark","perception_noise","Outputnoise_speed","Outputnoise_steering","control_delay_speed","control_Delay_steering","perception_delay"]
+    testmode_list = ["Benchmark","perception_noise","Outputnoise_speed","Outputnoise_steering","control_delay_speed","control_Delay_steering","perception_delay"]
     # testmode_list = ["Benchmark","perception_noise","Outputnoise_speed","Outputnoise_steering"]
     # testmode_list = ["control_delay_speed","control_Delay_steering","perception_delay"]
 
@@ -102,13 +102,13 @@ def main():
                         var2 = 0
                     if TESTMODE == "perception_noise":
                         var1 = planner.scale
-                        var2 = max(planner.ds.txt_x0[:,5])
+                        var2 = max(planner.ds.txt_x0[:,6])
                     if TESTMODE == "Outputnoise_speed":
                         var1 = planner.scale
-                        var2 = max(planner.ds.txt_x0[:,5])
+                        var2 = max(planner.ds.txt_x0[:,6])
                     if TESTMODE == "Outputnoise_steering":
                         var1 = planner.scale
-                        var2 = max(planner.ds.txt_x0[:,5])
+                        var2 = max(planner.ds.txt_x0[:,6])
                     if TESTMODE == "control_delay_speed" or TESTMODE == "control_Delay_steering" or TESTMODE == "perception_delay":
                         var1 = time_delay*10
                         var2 = 0
@@ -157,7 +157,7 @@ def main():
                             obs, _, _, _ = env.step(np.array([[steering_angle, speed]]))
                     z -= 1
                     laptime += 0.01
-                env.render(mode='human_fast') #'human_fast'(without delay) or 'human' (with 0.001 delay)
+                # env.render(mode='human_fast') #'human_fast'(without delay) or 'human' (with 0.001 delay)
             planner.ds.saveLapInfo()
 
 def initqueue(obs, control, time_delay):
