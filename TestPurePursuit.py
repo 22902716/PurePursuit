@@ -157,7 +157,7 @@ def main():
                             obs, _, _, _ = env.step(np.array([[steering_angle, speed]]))
                     z -= 1
                     laptime += 0.01
-                # env.render(mode='human_fast') #'human_fast'(without delay) or 'human' (with 0.001 delay)
+                env.render(mode='human_fast') #'human_fast'(without delay) or 'human' (with 0.001 delay)
             planner.ds.saveLapInfo()
 
 def initqueue(obs, control, time_delay):

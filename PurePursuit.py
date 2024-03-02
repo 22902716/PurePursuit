@@ -1,9 +1,5 @@
-from f110_gym.envs.base_classes import Integrator
-import gym
-import yaml
 import numpy as np
 import math
-from argparse import Namespace
 from dataSave import dataSave
 
 mu = 0.
@@ -20,6 +16,7 @@ class PurePursuitPlanner:
         self.ego_index = None
         self.Tindx = None
         self.scale = 0.
+        self.saveFlag = True
 
         '''
         load parameter figure out how to use yaml
@@ -118,6 +115,8 @@ class PurePursuitPlanner:
         self.ego_index = np.argmin(self.min_dist)
         if self.Tindx is None:
             self.Tindx = self.ego_index
+            self.prev_x0 = [0.0,0.0,0.0]
+
         
         speed = self.speed_list[self.ego_index]
         self.Lf = speed*self.v_gain + self.lfd  # update look ahead distance
@@ -143,13 +142,41 @@ class PurePursuitPlanner:
             return speed, 0.
         radius = 1/(2.0*waypoint/self.Lf**2)
         steering_angle = np.arctan(self.wheelbase/radius)
+
         self.completion = round(self.ego_index/len(self.points)*100,2)
         if self.completion > 99.5: self.completion = 100 
         speed_mod,steering_angle_mod = self.outputActionAdjust(speed,steering_angle)
         _,trackErr = self.interp_pts(self.ego_index,self.min_dist)
-        self.ds.saveStates(laptime,self.X0,speed,trackErr, self.scaledRand)
+        slip_angle = self.slipAngleCalc(obs)
+
+        self.saveFlag = self.toggle(self.saveFlag)
+
+        if self.saveFlag:
+            self.ds.saveStates(laptime, self.X0, speed, trackErr, self.scaledRand, steering_angle_mod, slip_angle)
+            
         return speed_mod, steering_angle_mod
     
+
+    def slipAngleCalc(self,obs):
+        x = [self.X0[0] -self.prev_x0[0]]
+        y = [self.X0[1] - self.prev_x0[1]]
+        
+        velocity_dir = np.arctan2(y,x)
+        slip = np.abs(velocity_dir[0] - obs['poses_theta'][0]) *360 / (2*np.pi)
+        if slip > 180:
+            slip = slip-360
+
+        
+
+        self.prev_x0 = self.X0
+
+        return slip
+    
+    def toggle(self,value):
+        if value:
+            return False
+        else:
+            return True
 
     def inputStateAdust(self,obs):
         X0 = [obs['poses_x'][0], obs['poses_y'][0], obs['linear_vels_x'][0]]
