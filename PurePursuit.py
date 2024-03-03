@@ -152,7 +152,7 @@ class PurePursuitPlanner:
         self.saveFlag = self.toggle(self.saveFlag)
 
         if self.saveFlag:
-            self.ds.saveStates(laptime, self.X0, speed, trackErr, self.scaledRand, steering_angle_mod, slip_angle)
+            self.ds.saveStates(laptime, self.X0, speed, trackErr, self.scaledRand, self.completion, steering_angle_mod, slip_angle)
             
         return speed_mod, steering_angle_mod
     
