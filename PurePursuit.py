@@ -149,10 +149,7 @@ class PurePursuitPlanner:
         _,trackErr = self.interp_pts(self.ego_index,self.min_dist)
         slip_angle = self.slipAngleCalc(obs)
 
-        self.saveFlag = self.toggle(self.saveFlag)
-
-        if self.saveFlag:
-            self.ds.saveStates(laptime, self.X0, speed, trackErr, self.scaledRand, self.completion, steering_angle_mod, slip_angle)
+        self.ds.saveStates(laptime, self.X0, speed, trackErr, self.scaledRand, self.completion, steering_angle_mod, slip_angle)
             
         return speed_mod, steering_angle_mod
     
@@ -166,17 +163,10 @@ class PurePursuitPlanner:
         if slip > 180:
             slip = slip-360
 
-        
-
         self.prev_x0 = self.X0
 
         return slip
-    
-    def toggle(self,value):
-        if value:
-            return False
-        else:
-            return True
+
 
     def inputStateAdust(self,obs):
         X0 = [obs['poses_x'][0], obs['poses_y'][0], obs['linear_vels_x'][0]]

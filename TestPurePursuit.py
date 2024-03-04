@@ -139,8 +139,7 @@ def main():
                     speed,steering_angle = planner.plan(obs_queue[0],laptime)
                 else:
                     speed,steering_angle = planner.plan(obs,laptime)
-                    new_speed,new_steering_angle = planner.plan(obs,laptime)
-                    control = [new_speed, new_steering_angle]
+                    control = [speed, steering_angle]
 
                 z = UPDATE_PERIOD
                 while z > 0:
