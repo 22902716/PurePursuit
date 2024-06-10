@@ -24,9 +24,9 @@ def main():
     # testmode_list = ["v_gain","lfd"]
 
     '''Experiments'''
-    # testmode_list = ["perception_delay"]
+    testmode_list = ["temp"]
 
-    testmode_list = ["Benchmark","perception_noise","Outputnoise_speed","Outputnoise_steering","control_delay_speed","control_Delay_steering","perception_delay"]
+    # testmode_list = ["Benchmark","perception_noise","Outputnoise_speed","Outputnoise_steering","control_delay_speed","control_Delay_steering","perception_delay"]
     # testmode_list = ["Benchmark","perception_noise","Outputnoise_speed","Outputnoise_steering"]
     # testmode_list = ["control_delay_speed","control_Delay_steering","perception_delay"]
 
@@ -153,10 +153,10 @@ def main():
                             new_obs, _, _, _ = env.step(np.array([[steering_angle,speed]]))
                             obs_queue.append(new_obs)
                         else:
-                            obs, _, _, _ = env.step(np.array([[steering_angle, speed]]))
+                            obs, _, _, _ = env.step(np.array([[steering_angle, speed*0.9]]))
                     z -= 1
                     laptime += 0.01
-                env.render(mode='human_fast') #'human_fast'(without delay) or 'human' (with 0.001 delay)
+                env.render(mode='human') #'human_fast'(without delay) or 'human' (with 0.001 delay)
             planner.ds.saveLapInfo()
 
 def initqueue(obs, control, time_delay):

@@ -21,6 +21,10 @@ class PurePursuitPlanner:
         '''
         load parameter figure out how to use yaml
         '''
+        if self.TESTMODE == "temp":
+            self.v_gain = param.Benchmark_v_gain+0.091             #change this parameter for different tracks 
+            self.lfd = param.Benchmark_lfd+2.1                        #lood forward distance constant
+            self.Max_iter = 1
         if self.TESTMODE == "Benchmark" or self.TESTMODE == " ":
             self.v_gain = param.Benchmark_v_gain                #change this parameter for different tracks 
             self.lfd = param.Benchmark_lfd      

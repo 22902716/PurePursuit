@@ -58,5 +58,8 @@ class dataSave:
         if self.TESTMODE == "lfd":
             var1 = "lfd_constant"
             var2 = "lookahead dist"
+        if self.TESTMODE == "temp":
+            var1 = "NA"
+            var2 = "NA"
           
         np.savetxt(f"csv/{self.map_name}/{self.map_name}_{self.TESTMODE}.csv", self.txt_lapInfo,delimiter=',',header = f"lap_count, lap_success, laptime, completion, {var1}, {var2}, aveTrackErr, Computation_time", fmt="%-10f")
