@@ -137,6 +137,7 @@ class PurePursuitPlanner:
                 self.Tindx += 1
 
     def plan(self, obs, laptime):
+        x0_states = [obs['poses_x'][0], obs['poses_y'][0], obs['linear_vels_x'][0]]
         self.X0 = self.inputStateAdust(obs)
         self.search_nearest_target(obs)
         waypoint = np.dot (np.array([np.sin(-obs['poses_theta'][0]),np.cos(-obs['poses_theta'][0])]),
@@ -153,7 +154,7 @@ class PurePursuitPlanner:
         _,trackErr = self.interp_pts(self.ego_index,self.min_dist)
         slip_angle = self.slipAngleCalc(obs)
 
-        self.ds.saveStates(laptime, self.X0, speed, trackErr, self.scaledRand, self.completion, steering_angle_mod, slip_angle)
+        self.ds.saveStates(laptime, x0_states, speed, trackErr, self.scaledRand, self.completion, steering_angle_mod, slip_angle)
             
         return speed_mod, steering_angle_mod
     
