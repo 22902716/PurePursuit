@@ -18,17 +18,17 @@ UPDATE_PERIOD = 2
 
 def main():
     map_name_list = ["gbr","esp","mco"]
-    # map_name_list = ["esp"]
+    # map_name_list = ["mco"]
 
     '''Tuning'''
     # testmode_list = ["v_gain","lfd"]
 
     '''Experiments'''
-    testmode_list = ["perception_noise"]
+    # testmode_list = ["perception_noise"]
 
     # testmode_list = ["Benchmark","perception_noise","Outputnoise_speed","Outputnoise_steering","control_delay_speed","control_Delay_steering","perception_delay"]
     # testmode_list = ["Benchmark","perception_noise","Outputnoise_speed","Outputnoise_steering"]
-    # testmode_list = ["control_delay_speed","control_Delay_steering","perception_delay"]
+    testmode_list = ["control_Delay_steering","perception_delay","control_delay_speed"]
 
     
     for map_name in map_name_list:
@@ -67,7 +67,7 @@ def main():
 
             env = gym.make('f110_gym:f110-v0', map='./maps/'+map_name, map_ext='.png', num_agents=1, timestep=0.01, integrator=Integrator.RK4)
             obs, step_reward, done, info = env.reset(np.array([[0, 0, 0]]))
-            new_obs, step_reward, done, info = env.reset(np.array([[0, 0, 0]]))
+            new_obs = obs
 
             env.add_render_callback(render_callback)
             env.render()
@@ -93,7 +93,12 @@ def main():
                         lapCount += obs['lap_counts'][0]
                         planner.ego_index = None
                         planner.Tindx = None    
-                        obs, _, _, _ = env.reset(np.array([[0, 0, 0]]))
+                        if TESTMODE == "control_delay_speed" or TESTMODE == "control_Delay_steering" or TESTMODE == "perception_delay":
+                            rand_start_x = np.random.normal(0,0.1,1)
+                            rand_start_y = np.random.normal(0,0.1,1)
+                            obs,_ , _, _ = env.reset(np.array([[0+rand_start_x, 0+rand_start_y, 0]]))
+                        else:
+                            obs, _, _, _ = env.reset(np.array([[0, 0, 0]]))
                     else:
                         print("Iter_count = ", iter_count, "laptime = ", laptime)                      
 
@@ -130,7 +135,7 @@ def main():
                     laptime = 0.0
                     computation_time_start = time.time()
                     if TESTMODE == "control_delay_speed" or TESTMODE == "control_Delay_steering" or TESTMODE == "perception_delay":
-                        time_delay += 1
+                        time_delay = iter_count//10
                         new_speed,new_steering_angle = planner.plan(obs,laptime)
                         control = [new_speed, new_steering_angle]
                         control_queue, obs_queue = initqueue(obs,control,time_delay)
@@ -156,6 +161,8 @@ def main():
                             obs, _, _, _ = env.step(np.array([[steering_angle, speed*0.9]]))
                     z -= 1
                     laptime += 0.01
+                # if iter_count == 20 or iter_count == 40 or iter_count == 60 or iter_count == 80:
+                #     env.render(mode='human')
                 # env.render(mode='human') #'human_fast'(without delay) or 'human' (with 0.001 delay)
             planner.ds.saveLapInfo()
 
